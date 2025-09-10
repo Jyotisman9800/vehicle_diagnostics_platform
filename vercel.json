@@ -6,14 +6,12 @@
   "trailingSlash": false,
   "headers": [
     {
-      "source": "/(.*)\\.(css|js|png|jpg|svg|ico|woff2)",
+      "source": "/(.*)\\.(css|js|jsx|png|jpg|svg|ico|woff|woff2)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     }
-  ],
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
   ]
+  /* Note: No rewrites required since we use hash routing (#/...).
+     Rewrites here would otherwise intercept /styles.css and /app.jsx. */
 }
-
