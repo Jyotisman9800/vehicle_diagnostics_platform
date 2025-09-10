@@ -12,7 +12,7 @@ const DATA = {
 };
 
 // Utilities
-const getPath = () => window.location.hash.replace('#','') || '/dashboard';
+const getPath = () => window.location.hash.replace('#','') || '/launchpad';
 
 function DonutChart({slices}){
   const ref = useRef(null);
@@ -292,6 +292,7 @@ function App(){
   const header = useMemo(()=>{
     if(path.startsWith('/fleet-operators/')) return {title:'Fleet Operators', subtitle:'Manage and monitor your fleet operators'};
     switch(path){
+      case '/launchpad': return {title:'IPE Launchpad', subtitle:'Reference dashboard layout'};
       case '/fleet-operators': return {title:'Fleet Operators', subtitle:'Manage and monitor your fleet operators'};
       case '/vehicle-dashboard': return {title:'Vehicle Dashboard', subtitle:'vehicle Dashboard'};
       default: return {title:'Fleet Dashboard', subtitle:'Real-time diagnostics and fleet management'};
@@ -302,18 +303,131 @@ function App(){
   if(path==='/fleet-operators') View = FleetOperators;
   else if(path.startsWith('/fleet-operators/')) View = OperatorDetail;
   else if(path==='/vehicle-dashboard') View = VehicleDashboard;
+  else if(path==='/launchpad') View = Launchpad;
 
   return (
-    <div className="layout">
-      <Sidebar path={path} />
-      <main className="main">
-        <Topbar title={header.title} subtitle={header.subtitle} />
-        <View />
-      </main>
-    </div>
+    path==='/launchpad' ? (
+      <Launchpad />
+    ) : (
+      <div className="layout">
+        <Sidebar path={path} />
+        <main className="main">
+          <Topbar title={header.title} subtitle={header.subtitle} />
+          <View />
+        </main>
+      </div>
+    )
   );
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
 
+// Launchpad (wireframe-exact) view used for parity with your screenshots
+function Launchpad(){
+  const [open, setOpen] = useState(false);
+  const KPI = ({title, value, sub}) => (
+    <div className="lp-kpi">
+      <header><span className="kpi-meta tbd">TBD</span><span className="kpi-title">{title}</span></header>
+      <div className="kpi-value">{value}</div>
+      <div className="kpi-sub">{sub}</div>
+    </div>
+  );
+  return (
+    <div className="lp">
+      <header className="lp-appbar">
+        <div className="lp-left">
+          <div className="lp-brand"><span className="badge">IPE</span><h1>Launchpad</h1><button className="primary small">+ New</button></div>
+        </div>
+        <div className="lp-center">
+          <div className="lp-search"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16a6.471 6.471 0 0 0 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="#98a2b3"/></svg><input placeholder="Search"/></div>
+        </div>
+        <div className="lp-right">
+          <div className="range"><span>Last</span><button className="chip">60 days ▾</button></div>
+          <button className="icon-btn" onClick={()=>setOpen(true)} aria-label="Notifications"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zm6-6V11a6 6 0 0 0-12 0v5L4 18v1h16v-1l-2-2z" fill="currentColor"/></svg></button>
+        </div>
+      </header>
+
+      <main className="lp-main">
+        <section className="lp-kpis">
+          <KPI title="Customs" value="1,097" sub="Open Cases" />
+          <KPI title="Buy" value="685" sub="Open Cases" />
+          <KPI title="Direct Seizure" value="533" sub="Open Cases" />
+          <KPI title="Civil" value="455" sub="Open Cases" />
+          <KPI title="Investigations" value="109" sub="Open Cases" />
+          <KPI title="Trainings" value="10" sub="Open Cases" />
+          <KPI title="Online Takedown" value="167,106" sub="Open Cases" />
+          <KPI title="Standalone" value="3,139" sub="Open Cases" />
+        </section>
+
+        <section className="lp-grid-3">
+          <div className="card list-card">
+            <div className="card-head"><h2>Key Case Phases – All Programs</h2><button className="icon-btn" aria-label="Expand"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 10l5 5 5-5z" fill="currentColor"/></svg></button></div>
+            <ul className="lp-list">
+              <li className="active">All Programs</li>
+              <li>Customs</li>
+              <li>Buy</li>
+              <li>Direct Seizure</li>
+              <li>Civil</li>
+              <li>Investigations</li>
+              <li>Online Takedowns</li>
+              <li>Standalone</li>
+            </ul>
+            <div className="mini-cards">
+              <div className="mini"><span className="tbd">TBD</span><div className="big">1,262</div><div className="label">Seized</div></div>
+              <div className="mini"><span className="tbd">TBD</span><div className="big">412</div><div className="label">CAD Letters</div></div>
+              <div className="mini"><span className="tbd">TBD</span><div className="big">3</div><div className="label">Objections</div></div>
+              <div className="mini"><span className="tbd">TBD</span><div className="big">615</div><div className="label">Platform Pushback</div></div>
+              <div className="mini"><span className="tbd">TBD</span><div className="big">143</div><div className="label">Determination Made</div></div>
+              <div className="mini"><span className="tbd">TBD</span><div className="big">10</div><div className="label">Training Complete</div></div>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-head"><h2>Image Review Status</h2></div>
+            <div className="lp-bars">
+              {['In Progress','Outstanding','Completed','Further Review','New Image Required'].map((label,i)=> (
+                <div className="lp-bar-row" key={label}>
+                  <span>{label}</span>
+                  <div className="lp-bar"><span style={{width:[70,45,22,10,6][i]+'%'}}></span></div>
+                  <span className="pct">000%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="card tasks">
+            <div className="card-head"><h2>All Critical Tasks</h2><button className="icon-btn" aria-label="Expand"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 10l5 5 5-5z" fill="currentColor"/></svg></button></div>
+            <ul className="tasks-list">
+              <li><span>Review Images</span> <span className="pill">957</span></li>
+              <li><span>New Image Required</span> <span className="pill">111</span></li>
+              <li><span>Liaison With</span> <span className="pill">75</span></li>
+              <li><span>Others</span> <span className="pill">173</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="grid-2" style={{marginTop:12}}>
+          <div className="card map"><div className="card-head"><h2>Repeat Offenders</h2></div><div className="world"></div></div>
+          <div className="card map"><div className="card-head"><h2>Product Seizures by Country</h2></div><div className="world faded"></div></div>
+        </section>
+      </main>
+
+      <aside className={"lp-drawer" + (open?" open":"")} aria-hidden={!open}>
+        <div className="drawer-head"><h2>Notifications</h2><button className="icon-btn" onClick={()=>setOpen(false)} aria-label="Close"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M18.3 5.71L12 12.01 5.7 5.7 4.29 7.11 10.59 13.4 4.3 19.7l1.41 1.41 6.29-6.29 6.29 6.29 1.41-1.41-6.29-6.29 6.3-6.29z" fill="currentColor"/></svg></button></div>
+        <div className="drawer-body">
+          {[{t:'Alert 1',d:"Today's Date",c:'What action makes the most sense...'},
+            {t:'Alert 2',d:'Yesterday\'s Date',c:'Should the Notifications icon live in the Top Nav...'},
+            {t:'Message 1',d:"Today\'s Date",c:'Sometimes, messages will be long...'},
+            {t:'Message 2',d:"Yesterday\'s Date",c:'What are the sort and filter criteria...'}].map((n,i)=> (
+            <div className={"note "+(i<2?"alert":"msg")} key={i}>
+              <div className="meta"><span>{n.t}</span><span>•</span><span>{n.d}</span></div>
+              <div className="text">{n.c}</div>
+              <div className="actions"><a href="#">Read</a><a href="#">Done</a><a href="#">Save</a></div>
+            </div>
+          ))}
+        </div>
+      </aside>
+    </div>
+  );
+}
