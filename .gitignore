@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Node / tooling (if added later)
+node_modules/
+dist/
+build/
+.vercel/
+
+# Logs / env
+npm-debug.log*
+yarn-error.log*
+.env
+.env.*
+
+# Editor
+.idea/
+.vscode/
+
