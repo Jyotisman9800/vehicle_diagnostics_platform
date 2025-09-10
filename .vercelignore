@@ -1,0 +1,10 @@
+# Ignore dev-only files when deploying
+.git
+.github
+.idea
+.vscode
+node_modules
+*.md
+**/*.test.*
+**/__tests__/**
+
